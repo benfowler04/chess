@@ -11,4 +11,11 @@ RSpec.describe Piece do
             expect(piece.type).to eql("king")
         end
     end
+
+    describe "#set_symbol" do
+        it "sets the piece's symbol" do
+            piece = Piece.new("white", "king")
+            expect(piece.symbol).to eql("\u265a")
+        end
+    end
 end
