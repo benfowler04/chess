@@ -10,5 +10,9 @@ RSpec.describe Player do
             player = Player.new("Ben", "white")
             expect(player.piece_color).to eql("white")
         end
+        it "returns the correct check status for the player" do
+            player = Player.new("Ben", "white")
+            expect(player.check_status).to eql(false)
+        end
     end
 end
