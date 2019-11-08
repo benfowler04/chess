@@ -2,13 +2,14 @@ require './lib/piece'
 
 RSpec.describe Piece do
     describe "#initialize" do
+        before(:each) do
+            @piece = Piece.new("white", "king")
+        end
         it "returns the piece's color" do
-            piece = Piece.new("white", "king")
-            expect(piece.color).to eql("white")
+            expect(@piece.color).to eql("white")
         end
         it "returns the piece's type" do
-            piece = Piece.new("white", "king")
-            expect(piece.type).to eql("king")
+            expect(@piece.type).to eql("king")
         end
     end
 
