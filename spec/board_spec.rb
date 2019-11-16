@@ -49,44 +49,81 @@ RSpec.describe Board do
             @board = Board.new
         end
         it "returns false if column is out of bounds" do
+            expect(@board.is_valid_end?("01","12","white","pawn")).to eql(false)
         end
         it "returns false if row if out of bounds" do
+            expect(@board.is_valid_end?("12","10","white","pawn")).to eql(false)
         end
         it "returns false if start and end position are the same" do
+            expect(@board.is_valid_end?("12","12","white","pawn")).to eql(false)
         end
         it "returns false if one of the player's own pieces is in the end position" do
+            expect(@board.is_valid_end?("11","12","white","rook")).to eql(false)
         end
         it "returns false if the move would put your own king in check" do
+            @board.move_piece("32","34")
+            @board.move_piece("41","14")
+            expect(@board.is_valid_end?("47","45","black","pawn")).to eql(false)
         end
         it "returns true if a king moves one space horizontally" do
+            @board.move_piece("42","43")
+            @board.move_piece("41","42")
+            expect(@board.is_valid_end?("51","41","white","king")).to eql(true)
         end
         it "returns true if a king moves one space vertically" do
+            @board.move_piece("52","53")
+            expect(@board.is_valid_end?("51","52","white","king")).to eql(true)
         end
         it "returns true if a king moves one space diagonally" do
+            @board.move_piece("42","43")
+            expect(@board.is_valid_end?("51","42","white","king")).to eql(true)
         end
         it "returns false if a king tries to move two spaces horizontally" do
+            @board.move_piece("42","44")
+            @board.move_piece("41","43")
+            @board.move_piece("31","42")
+            expect(@board.is_valid_end?("51","31","white","king")).to eql(false)
         end
-        it "returns false if a king tries to move two spaces horizontally" do
+        it "returns false if a king tries to move two spaces vertically" do
+            @board.move_piece("52","54")
+            expect(@board.is_valid_end?("51","53","white","king")).to eql(false)
         end
         it "returns false if a king tries to move two spaces diagonally" do
+            @board.move_piece("42","43")
+            expect(@board.is_valid_end?("51","33","white","king")).to eql(false)
         end
         it "returns true if a queen moves horizontally" do
+            @board.move_piece("42","43")
+            @board.move_piece("31","42")
+            expect(@board.is_valid_end?("41","31","white","queen")).to eql(true)
         end
         it "returns true if a queen moves vertically" do
+            @board.move_piece("42","43")
+            expect(@board.is_valid_end?("41","42","white","queen")).to eql(true)
         end
         it "returns true if a queen moves diagonally" do
+            @board.move_piece("32","33")
+            expect(@board.is_valid_end?("41","32","white","queen")).to eql(true)
         end
         it "returns false if a queen tries to move horizontally and another piece is in the way" do
+            @board.move_piece("21","13")
+            expect(@board.is_valid_end?("41","21","white","queen")).to eql(false)
         end
         it "returns false if a queen tries to move vertically and another piece is in the way" do
+            expect(@board.is_valid_end?("41","43","white","queen")).to eql(false)
         end
         it "returns false if a queen tries to move diagonally and another piece is in the way" do
+            expect(@board.is_valid_end?("41","23","white","queen")).to eql(false)
         end
         it "returns true if a knight moves two columns and one row" do
+            @board.move_piece("42","43")
+            expect(@board.is_valid_end?("21","42","white","knight")).to eql(true)
         end
         it "returns true if a knight moves one column and two rows" do
+            expect(@board.is_valid_end?("21","13","white","knight")).to eql(true)
         end
         it "returns false if a knight tries to move three spaces in a straight line" do
+            expect(@board.is_valid_end?("21","24","white","knight")).to eql(false)
         end
         it "returns true if a bishop moves diagonally" do
         end
@@ -159,16 +196,33 @@ RSpec.describe Board do
             @board = Board.new
         end
         it "moves the piece" do
+            @board.move_piece("12","14")
+            expect(@board.current_state[0][3].type).to eql("pawn")
+            expect(@board.current_state[0][3].color).to eql("white")
         end
         it "removes a captured piece from the board" do
+            @board.move_piece("21","13")
+            @board.move_piece("13","25")
+            @board.move_piece("25","17")
+            expect(@board.current_state[0][6].type).to eql("knight")
+            expect(@board.current_state[0][6].color).to eql("white")
         end
-        it "promotes a pawn that reaches the other end of the board" do
+        xit "promotes a pawn that reaches the other end of the board" do
+            # I know this works, but I have no idea how to unit test it
         end
         it "returns 0 if the game should continue" do
+            expect(@board.move_piece("12","14")).to eql(0)
         end
         it "returns 1 if the move puts the other player's king in check" do
+            @board.move_piece("32","34")
+            @board.move_piece("47","45")
+            expect(@board.move_piece("41","14")).to eql(1)
         end
         it "returns 2 if the move puts the other player's king in checkmate" do
+            @board.move_piece("62","63")
+            @board.move_piece("57","55")
+            @board.move_piece("72","74")
+            expect(@board.move_piece("48","84")).to eql(2)
         end
     end
 
