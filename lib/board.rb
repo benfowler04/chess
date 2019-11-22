@@ -289,6 +289,7 @@ class Board
             puts "What kind of piece do you want to promote your pawn to?"
             puts "(q)ueen, (k)night, (b)ishop, or (r)ook?"
             piece_type = gets.chomp.downcase
+            next if piece_type.empty?
             if "qkbr".include?(piece_type)
                 case piece_type
                 when "q"

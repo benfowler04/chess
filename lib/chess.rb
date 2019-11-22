@@ -23,6 +23,7 @@ class Chess
                 puts "Columns are 1-8 (starting at left), rows are 1-8 (starting at bottom)."
                 puts "Enter the column and row of the piece to move (no space), or 'r' to resign:"
                 start_position = gets.chomp
+                next if start_position.empty?
                 if "rR".include?(start_position)
                     puts "Game over."
                     exit
@@ -34,6 +35,7 @@ class Chess
                 puts
                 puts "Enter the column and row of the square to move to:"
                 end_position = gets.chomp
+                next if end_position.empty?
                 valid_move = true if @board.is_valid_end?(start_position, end_position, @current_player.piece_color, piece_to_move)
             end
             result = @board.move_piece(start_position, end_position)
