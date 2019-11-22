@@ -125,69 +125,140 @@ RSpec.describe Board do
         it "returns false if a knight tries to move three spaces in a straight line" do
             expect(@board.is_valid_end?("21","24","white","knight")).to eql(false)
         end
-        it "returns true if a bishop moves diagonally" do
+        it "returns true if a bishop moves diagonally up and right" do
+            @board.move_piece("42","43")
+            expect(@board.is_valid_end?("31","42","white","bishop")).to eql(true)
+        end
+        it "returns true if a bishop moves diagonally down and right" do
+            @board.move_piece("47","46")
+            expect(@board.is_valid_end?("38","47","black","bishop")).to eql(true)
+        end
+        it "returns true if a bishop moves diagonally down and left" do
+            @board.move_piece("27","26")
+            expect(@board.is_valid_end?("38","27","black","bishop")).to eql(true)
+        end
+        it "returns true if a bishop moves diagonally up and left" do
+            @board.move_piece("22","23")
+            expect(@board.is_valid_end?("31","22","white","bishop")).to eql(true)
         end
         it "returns false if a bishop tries to move horizontally" do
+            @board.move_piece("21","13")
+            expect(@board.is_valid_end?("31","21","white","bishop")).to eql(false)
         end
         it "returns false if a bishop tries to move vertically" do
+            @board.move_piece("32","33")
+            expect(@board.is_valid_end?("31","32","white","bishop")).to eql(false)
         end
         it "returns false if a bishop tries to move diagonally up and right and another piece is in the way" do
+            expect(@board.is_valid_end?("31","53","white","bishop")).to eql(false)
         end
         it "returns false if a bishop tries to move diagonally down and right and another piece is in the way" do
+            expect(@board.is_valid_end?("38","56","black","bishop")).to eql(false)
         end
         it "returns false if a bishop tries to move diagonally down and left and another piece is in the way" do
+            expect(@board.is_valid_end?("38","16","black","bishop")).to eql(false)
         end
         it "returns false if a bishop tries to move diagonally up and left and another piece is in the way" do
+            expect(@board.is_valid_end?("31","13","white","bishop")).to eql(false)
         end
         it "returns true if a rook moves horizontally" do
+            @board.move_piece("12","14")
+            @board.move_piece("11","13")
+            expect(@board.is_valid_end?("13","33","white","rook")).to eql (true)
         end
         it "returns true if a rook moves vertically" do
+            @board.move_piece("12","14")
+            expect(@board.is_valid_end?("11","13","white","rook")).to eql(true)
         end
         it "returns false if a rook tries to move diagonally" do
+            @board.move_piece("22","23")
+            expect(@board.is_valid_end?("11","22","white","rook")).to eql(false)
         end
         it "returns false if a rook tries to move horizontally and another piece is in the way" do
+            @board.move_piece("22","23")
+            @board.move_piece("31","22")
+            expect(@board.is_valid_end?("11","31","white","rook")).to eql(false)
         end
         it "returns false if a rook tries to move vertically and another piece is in the way" do
+            expect(@board.is_valid_end?("11","13","white","rook")).to eql(false)
         end
         it "returns true if a white pawn moves forward one space" do
+            expect(@board.is_valid_end?("12","13","white","pawn")).to eql(true)
         end
         it "returns true if a white pawn that hasn't moved yet moves forward two spaces" do
+            expect(@board.is_valid_end?("12","14","white","pawn")).to eql(true)
         end
         it "returns false if a white pawn that has already moved tries to move forward two spaces" do
+            @board.move_piece("12","13")
+            expect(@board.is_valid_end?("13","15","white","pawn")).to eql(false)
         end
         it "returns false if a white pawn tries to move two forward and another piece is in the way" do
+            @board.move_piece("21","13")
+            expect(@board.is_valid_end?("12","14","white","pawn")).to eql(false)
         end
         it "returns true if a white pawn captures another piece diagonally" do
+            @board.move_piece("12","14")
+            @board.move_piece("27","25")
+            expect(@board.is_valid_end?("14","25","white","pawn")).to eql(true)
         end
         it "returns false if a white pawn tries to move diagonally when not capturing another piece" do
+            expect(@board.is_valid_end?("12","23","white","pawn")).to eql(false)
         end
         it "returns false if a white pawn tries to move backward" do
+            @board.move_piece("21","13")
+            expect(@board.is_valid_end?("22","21","white","pawn")).to eql(false)
         end
         it "returns false if a white pawn tries to capture a piece on the row behind it diagonally" do
+            @board.move_piece("12","15")
+            @board.move_piece("27","24")
+            expect(@board.is_valid_end?("15","24","white","pawn")).to eql(false)
         end
         it "returns false if a white pawn tries to move forward three spaces" do
+            expect(@board.is_valid_end?("12","15","white","pawn")).to eql(false)
         end
         it "returns false if a white pawn tries to capture another piece two spaces away diagonally" do
+            @board.move_piece("12","14")
+            @board.move_piece("37","36")
+            expect(@board.is_valid_end?("14","36","white","pawn")).to eql(false)
         end
         it "returns true if a black pawn moves forward one space" do
+            expect(@board.is_valid_end?("17","16","black","pawn")).to eql(true)
         end
         it "returns true if a black pawn that hasn't moved yet moves forward two spaces" do
+            expect(@board.is_valid_end?("17","15","black","pawn")).to eql(true)
         end
         it "returns false if a black pawn that has already moved tries to move forward two spaces" do
+            @board.move_piece("17","16")
+            expect(@board.is_valid_end?("16","14","black","pawn")).to eql(false)
         end
         it "returns false if a black pawn tries to move two forward and another piece is in the way" do
+            @board.move_piece("28","16")
+            expect(@board.is_valid_end?("17","15","black","pawn")).to eql(false)
         end
         it "returns true if a black pawn captures another piece diagonally" do
+            @board.move_piece("12","14")
+            @board.move_piece("27","25")
+            expect(@board.is_valid_end?("25","14","black","pawn")).to eql(true)
         end
         it "returns false if a black pawn tries to move diagonally when not capturing another piece" do
+            expect(@board.is_valid_end?("17","26","black","pawn")).to eql(false)
         end
         it "returns false if a black pawn tries to move backward" do
+            @board.move_piece("28","16")
+            expect(@board.is_valid_end?("27","28","black","pawn")).to eql(false)
         end
         it "returns false if a black pawn tries to capture a piece on the row behind it diagonally" do
+            @board.move_piece("12","15")
+            @board.move_piece("27","24")
+            expect(@board.is_valid_end?("24","15","black","pawn")).to eql(false)
         end
         it "returns false if a black pawn tries to move forward three spaces" do
+            expect(@board.is_valid_end?("17","14","black","pawn")).to eql(false)
         end
         it "returns false if a black pawn tries to capture another piece two spaces away diagonally" do
+            @board.move_piece("12","14")
+            @board.move_piece("37","36")
+            expect(@board.is_valid_end?("36","14","black","pawn")).to eql(false)
         end
     end
 
@@ -201,9 +272,7 @@ RSpec.describe Board do
             expect(@board.current_state[0][3].color).to eql("white")
         end
         it "removes a captured piece from the board" do
-            @board.move_piece("21","13")
-            @board.move_piece("13","25")
-            @board.move_piece("25","17")
+            @board.move_piece("21","17")
             expect(@board.current_state[0][6].type).to eql("knight")
             expect(@board.current_state[0][6].color).to eql("white")
         end
