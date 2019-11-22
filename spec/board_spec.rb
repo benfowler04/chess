@@ -207,8 +207,11 @@ RSpec.describe Board do
             expect(@board.current_state[0][6].type).to eql("knight")
             expect(@board.current_state[0][6].color).to eql("white")
         end
-        xit "promotes a pawn that reaches the other end of the board" do
+        xit "promotes a white pawn that reaches the other end of the board" do
             # I know this works, but I have no idea how to unit test it
+        end
+        xit "promotes a black pawn that reaches the other end of the board" do
+            # this also works, but I still have no idea how to unit test it
         end
         it "returns 0 if the game should continue" do
             expect(@board.move_piece("12","14")).to eql(0)

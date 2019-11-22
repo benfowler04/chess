@@ -84,7 +84,7 @@ class Board
         end_row = end_position[1].to_i - 1
         @current_state[end_column][end_row] = @current_state[start_column][start_row]
         @current_state[start_column][start_row] = ""
-        if end_row == 7 && @current_state[end_column][end_row].type == "pawn"
+        if (end_row == 7 || end_row == 0) && @current_state[end_column][end_row].type == "pawn"
             promote(end_column, end_row)
         end
         if check?(@current_state[end_column][end_row].color)
