@@ -221,6 +221,11 @@ RSpec.describe Board do
             @board.move_piece("37","36")
             expect(@board.is_valid_end?("14","36","white","pawn")).to eql(false)
         end
+        it "returns true if a white pawn captures a black pawn in passing" do
+            @board.move_piece("12","15")
+            @board.move_piece("27","25")
+            expect(@board.is_valid_end?("15","26","white","pawn")).to eql(true)
+        end
         it "returns true if a black pawn moves forward one space" do
             expect(@board.is_valid_end?("17","16","black","pawn")).to eql(true)
         end
@@ -260,6 +265,11 @@ RSpec.describe Board do
             @board.move_piece("37","36")
             expect(@board.is_valid_end?("36","14","black","pawn")).to eql(false)
         end
+        it "returns true if a black pawn captures a white pawn in passing" do
+            @board.move_piece("27","24")
+            @board.move_piece("12","14")
+            expect(@board.is_valid_end?("24","13","black","pawn")).to eql(true)
+        end
     end
 
     describe "#move_piece" do
@@ -295,6 +305,14 @@ RSpec.describe Board do
             @board.move_piece("57","55")
             @board.move_piece("72","74")
             expect(@board.move_piece("48","84")).to eql(2)
+        end
+        it "leaves @en_passant_eligible empty if piece can't be captured en passant next turn" do
+            @board.move_piece("12","13")
+            expect(@board.instance_variable_get(:@en_passant_eligible)).to match_array([])
+        end
+        it "sets @en_passant_eligible if the piece can be captured en passant next turn" do
+            @board.move_piece("12","14")
+            expect(@board.instance_variable_get(:@en_passant_eligible)).to match_array([0,2])
         end
     end
 

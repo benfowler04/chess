@@ -25,6 +25,7 @@ class Board
             @current_state[column][1] = Piece.new("white", "pawn")
             @current_state[column][6] = Piece.new("black", "pawn")
         end
+        @en_passant_eligible = []
     end
 
     def is_valid_start?(position, color)
@@ -82,10 +83,27 @@ class Board
         start_row = start_position[1].to_i - 1
         end_column = end_position[0].to_i - 1
         end_row = end_position[1].to_i - 1
+        en_passant_capture = false
+        unless @en_passant_eligible.empty?
+            en_passant_capture = true if @current_state[start_column][start_row].type == "pawn" && @en_passant_eligible[0] == end_column && @en_passant_eligible[1] == end_row
+        end
         @current_state[end_column][end_row] = @current_state[start_column][start_row]
         @current_state[start_column][start_row] = ""
+        if en_passant_capture && @current_state[end_column][end_row].color == "white"
+            @current_state[end_column][end_row - 1] = ""
+        elsif en_passant_capture
+            @current_state[end_column][end_row + 1] = ""
+        end
         if (end_row == 7 || end_row == 0) && @current_state[end_column][end_row].type == "pawn"
             promote(end_column, end_row)
+        end
+        @en_passant_eligible.pop unless @en_passant_eligible.empty?
+        if @current_state[end_column][end_row].type == "pawn" && (end_row - start_row).abs == 2
+            if @current_state[end_column][end_row].color == "white"
+                @en_passant_eligible.push(end_column, end_row - 1)
+            else
+                @en_passant_eligible.push(end_column, end_row + 1)
+            end
         end
         if check?(@current_state[end_column][end_row].color)
             return 2 if checkmate?(@current_state[end_column][end_row].color)
@@ -214,7 +232,10 @@ class Board
         return false if start_row == end_row
         column_change, row_change = (start_column - end_column).abs, (start_row - end_row).abs
         return false if column_change + row_change > 2
-        return false if column_change == 1 && board_state[end_column][end_row] == ""
+        if column_change == 1 && board_state[end_column][end_row] == ""
+            return false if @en_passant_eligible.empty?
+            return false unless @en_passant_eligible[0] == end_column && @en_passant_eligible[1] == end_row
+        end
         return false if start_column == end_column && board_state[end_column][end_row] != ""
         if board_state[start_column][start_row].color == "white" && start_row == 1
             return false if end_row - start_row < 1
