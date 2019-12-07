@@ -342,4 +342,150 @@ RSpec.describe Board do
                                                 "\u265c\u265e\u265d\u265b\u265a\u265d\u265e\u265c\n").to_stdout
         end
     end
+
+    describe "#can_player_castle?" do
+        before(:each) do
+            @board = Board.new
+        end
+        it "returns true if white can castle queenside" do
+            @board.move_piece("21","23")
+            @board.move_piece("31","33")
+            @board.move_piece("41","43")
+            expect(@board.can_player_castle?("white","q")).to eql(true)
+        end
+        it "returns true if white can castle kingside" do
+            @board.move_piece("61","63")
+            @board.move_piece("71","73")
+            expect(@board.can_player_castle?("white","k")).to eql(true)
+        end
+        it "returns false if white has moved their queenside rook" do
+            @board.move_piece("21","23")
+            @board.move_piece("31","33")
+            @board.move_piece("41","43")
+            @board.move_piece("11","13")
+            @board.move_piece("13","11")
+            expect(@board.can_player_castle?("white","q")).to eql(false)
+        end
+        it "returns false if white has moved their kingside rook" do
+            @board.move_piece("61","63")
+            @board.move_piece("71","73")
+            @board.move_piece("81","83")
+            @board.move_piece("83","81")
+            expect(@board.can_player_castle?("white","k")).to eql(false)
+        end
+        it "returns false if white has moved their king and tries to castle queenside" do
+            @board.move_piece("21","23")
+            @board.move_piece("31","33")
+            @board.move_piece("41","43")
+            @board.move_piece("51","53")
+            @board.move_piece("53","51")
+            expect(@board.can_player_castle?("white","q")).to eql(false)
+        end
+        it "returns false if white has moved their king and tries to castle kingside" do
+            @board.move_piece("61","63")
+            @board.move_piece("71","73")
+            @board.move_piece("51","53")
+            @board.move_piece("53","51")
+            expect(@board.can_player_castle?("white","k")).to eql(false)
+        end
+        it "returns false if white can't castle queenside because a piece is in the way" do
+            @board.move_piece("31","33")
+            @board.move_piece("41","43")
+            expect(@board.can_player_castle?("white","q")).to eql(false)
+        end
+        it "returns false if white can't castle kingside because a piece is in the way" do
+            @board.move_piece("61","63")
+            expect(@board.can_player_castle?("white","k")).to eql(false)
+        end
+        it "returns false if white can't castle because their king is in check" do
+            @board.move_piece("47","42")
+            expect(@board.can_player_castle?("white","q")).to eql(false)
+        end
+        it "returns false if white can't castle queenside because it would put their king in check" do
+            @board.move_piece("27","22")
+            expect(@board.can_player_castle?("white","q")).to eql(false)
+        end
+        it "returns false if white can't castle kingside because it would put their king in check" do
+            @board.move_piece("87","82")
+            expect(@board.can_player_castle?("white","k")).to eql(false)
+        end
+        it "returns false if white can't castle queenside because the king would move through an attacked space" do
+            @board.move_piece("37","32")
+            expect(@board.can_player_castle?("white","q")).to eql(false)
+        end
+        it "returns false if white can't castle kingside because the king would move through an attacked space" do
+            @board.move_piece("77","72")
+            expect(@board.can_player_castle?("white","k")).to eql(false)
+        end
+        it "returns true if black can castle queenside" do
+            @board.move_piece("28","26")
+            @board.move_piece("38","36")
+            @board.move_piece("48","46")
+            expect(@board.can_player_castle?("black","q")).to eql(true)
+        end
+        it "returns true if black can castle kingside" do
+            @board.move_piece("68","66")
+            @board.move_piece("78","76")
+            expect(@board.can_player_castle?("black","k")).to eql(true)
+        end
+        it "returns false if black has moved their queenside rook" do
+            @board.move_piece("28","26")
+            @board.move_piece("38","36")
+            @board.move_piece("48","46")
+            @board.move_piece("18","16")
+            @board.move_piece("16","18")
+            expect(@board.can_player_castle?("black","q")).to eql(false)
+        end
+        it "returns false if black has moved their kingside rook" do
+            @board.move_piece("68","66")
+            @board.move_piece("78","76")
+            @board.move_piece("88","86")
+            @board.move_piece("86","88")
+            expect(@board.can_player_castle?("black","k")).to eql(false)
+        end
+        it "returns false if white has moved their king and tries to castle queenside" do
+            @board.move_piece("28","26")
+            @board.move_piece("38","36")
+            @board.move_piece("48","46")
+            @board.move_piece("58","56")
+            @board.move_piece("56","58")
+            expect(@board.can_player_castle?("black","q")).to eql(false)
+        end
+        it "returns false if white has moved their king and tries to castle kingside" do
+            @board.move_piece("68","66")
+            @board.move_piece("78","76")
+            @board.move_piece("58","56")
+            @board.move_piece("56","58")
+            expect(@board.can_player_castle?("black","k")).to eql(false)
+        end
+        it "returns false if black can't castle queenside because a piece is in the way" do
+            @board.move_piece("38","36")
+            @board.move_piece("48","46")
+            expect(@board.can_player_castle?("black","q")).to eql(false)
+        end
+        it "returns false if black can't castle kingside because a piece is in the way" do
+            @board.move_piece("68","66")
+            expect(@board.can_player_castle?("black","k")).to eql(false)
+        end
+        it "returns false if black can't castle because their king is in check" do
+            @board.move_piece("42","47")
+            expect(@board.can_player_castle?("black","q")).to eql(false)
+        end
+        it "returns false if black can't castle queenside because it would put their king in check" do
+            @board.move_piece("22","27")
+            expect(@board.can_player_castle?("black","q")).to eql(false)
+        end
+        it "returns false if black can't castle kingside because it would put their king in check" do
+            @board.move_piece("82","87")
+            expect(@board.can_player_castle?("black","k")).to eql(false)
+        end
+        it "returns false if black can't castle queenside because the king would move through an attacked space" do
+            @board.move_piece("32","37")
+            expect(@board.can_player_castle?("black","q")).to eql(false)
+        end
+        it "returns false if black can't castle kingside because the king would move through an attacked space" do
+            @board.move_piece("72","77")
+            expect(@board.can_player_castle?("black","k")).to eql(false)
+        end
+    end
 end

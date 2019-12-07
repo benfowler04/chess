@@ -26,6 +26,10 @@ class Board
             @current_state[column][6] = Piece.new("black", "pawn")
         end
         @en_passant_eligible = []
+        @white_can_castle_queenside = true
+        @white_can_castle_kingside = true
+        @black_can_castle_queenside = true
+        @black_can_castle_kingside = true
     end
 
     def is_valid_start?(position, color)
@@ -105,6 +109,20 @@ class Board
                 @en_passant_eligible.push(end_column, end_row + 1)
             end
         end
+        if @current_state[end_column][end_row].type == "king" && @current_state[end_column][end_row].color == "white"
+            @white_can_castle_queenside = false
+            @white_can_castle_kingside = false
+        elsif @current_state[end_column][end_row].type == "king"
+            @black_can_castle_queenside = false
+            @black_can_castle_kingside = false
+        end
+        if @current_state[end_column][end_row].type == "rook" && @current_state[end_column][end_row].color == "white"
+            @white_can_castle_queenside = false if start_column == 0
+            @white_can_castle_kingside = false if start_column == 7
+        elsif @current_state[end_column][end_row].type == "rook"
+            @black_can_castle_queenside = false if start_column == 0
+            @black_can_castle_kingside = false if start_column == 7
+        end
         if check?(@current_state[end_column][end_row].color)
             return 2 if checkmate?(@current_state[end_column][end_row].color)
             return 1
@@ -122,6 +140,60 @@ class Board
                 end
             end
             print "\n"
+        end
+    end
+
+    def can_player_castle?(color, side)
+        if color == "white"
+            return false if check?("black")
+        else
+            return false if check?("white")
+        end
+        if color == "white" && side == "q"
+            return false unless @white_can_castle_queenside
+            for column in 1..3
+                return false unless @current_state[column][0] == ""
+            end
+            for column in 2..3
+                return false if results_in_check?(4, 0, column, 0)
+            end
+        elsif color == "white"
+            return false unless @white_can_castle_kingside
+            for column in 5..6
+                return false unless @current_state[column][0] == ""
+                return false if results_in_check?(4, 0, column, 0)
+            end
+        elsif color == "black" && side == "q"
+            return false unless @black_can_castle_queenside
+            for column in 1..3
+                return false unless @current_state[column][7] == ""
+            end
+            for column in 2..3
+                return false if results_in_check?(4, 7, column, 7)
+            end
+        else
+            return false unless @black_can_castle_kingside
+            for column in 5..6
+                return false unless @current_state[column][7] == ""
+                return false if results_in_check?(4, 7, column, 7)
+            end
+        end
+        return true
+    end
+
+    def move_pieces_castling(color, side)
+        if color == "white" && side == "q"
+            move_piece("51","31")
+            return move_piece("11","41")
+        elsif color == "white"
+            move_piece("51","71")
+            return move_piece("81","61")
+        elsif color == "black" && side == "q"
+            move_piece("58","38")
+            return move_piece("18","48")
+        else
+            move_piece("58","78")
+            return move_piece("88","68")
         end
     end
 
